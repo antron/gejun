@@ -70,7 +70,25 @@ trait GejunCheckTrait
      */
     protected function check()
     {
-        $this->error = !checkdate($this->month, $this->day, $this->year);
+        $error = false;
+
+        if (!is_int($this->month)) {
+            $error = true;
+        }
+
+        if (!is_int($this->day)) {
+            $error = true;
+        }
+
+        if (!is_int($this->year)) {
+            $error = true;
+        }
+
+        if ($error) {
+            $this->error = true;
+        } else {
+            $this->error = !checkdate($this->month, $this->day, $this->year);
+        }
 
         $this->checkYear();
 
@@ -149,6 +167,7 @@ trait GejunCheckTrait
 
     /**
      * 表示用文字列の作成.
+     * 不明？空白？
      */
     private function makePrint()
     {

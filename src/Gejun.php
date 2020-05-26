@@ -92,11 +92,11 @@ class Gejun
         if ($json) {
             $data = json_decode($json);
 
-            $this->year = $data->year;
+            $this->year = intval($data->year);
 
-            $this->month = $data->month;
+            $this->month = intval($data->month);
 
-            $this->day = $data->day;
+            $this->day = intval($data->day);
         }
 
         $this->check();
@@ -107,21 +107,21 @@ class Gejun
      * 
      * @param array $inputs
      */
-    public function fromRequest($inputs)
+    public function fromRequest($inputs, $keys = ['year', 'month', 'day'])
     {
-        $this->year = intval($inputs['year']);
+        if (isset($inputs[$keys[0]])) {
+            $this->year = intval($inputs[$keys[0]]);
 
-        $this->month = intval($inputs['month']);
+            $this->month = intval($inputs[$keys[1]]);
 
-        $this->day = intval($inputs['day']);
-
-        unset($inputs['year']);
-
-        unset($inputs['month']);
-
-        unset($inputs['day']);
+            $this->day = intval($inputs[$keys[2]]);
+        }
 
         $this->check();
+
+        foreach ($keys as $key) {
+            unset($inputs[$key]);
+        }
 
         return $inputs;
     }
