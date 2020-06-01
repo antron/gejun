@@ -27,7 +27,7 @@ trait GejunFormTrait
      * @var array
      */
     public $form_month = [
-        0 => '不明',
+        0 => '',
         1 => '1月',
         2 => '2月',
         3 => '3月',
@@ -40,6 +40,7 @@ trait GejunFormTrait
         10 => '10月',
         11 => '11月',
         12 => '12月',
+        100 => '不明',
     ];
 
     /**
@@ -48,7 +49,7 @@ trait GejunFormTrait
      * @var array
      */
     public $form_day = [
-        0 => '不明',
+        0 => '',
         1 => '1日',
         2 => '2日',
         3 => '3日',
@@ -80,9 +81,11 @@ trait GejunFormTrait
         29 => '29日',
         30 => '30日',
         31 => '31日',
-        100 => '上旬',
-        110 => '中旬',
-        120 => '下旬',
+        100 => '不明',
+        110 => '末日',
+        120 => '上旬',
+        130 => '中旬',
+        140 => '下旬',
     ];
 
     /**
@@ -90,7 +93,7 @@ trait GejunFormTrait
      */
     public function setupForm()
     {
-        $this->form_year[0] = '不明';
+        $this->form_year[0] = '';
 
         $year_count = intval(date('Y')) + config('gejun.year_add');
 

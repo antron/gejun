@@ -92,11 +92,11 @@ class Gejun
         if ($json) {
             $data = json_decode($json);
 
-            $this->year = intval($data->year);
+            $this->year = $data->year;
 
-            $this->month = intval($data->month);
+            $this->month = $data->month;
 
-            $this->day = intval($data->day);
+            $this->day = $data->day;
         }
 
         $this->check();
@@ -106,15 +106,17 @@ class Gejun
      * データ取得_リクエストの配列.
      * 
      * @param array $inputs
+     * @param array $keys
+     * @return array
      */
     public function fromRequest($inputs, $keys = ['year', 'month', 'day'])
     {
         if (isset($inputs[$keys[0]])) {
-            $this->year = intval($inputs[$keys[0]]);
+            $this->year = $inputs[$keys[0]];
 
-            $this->month = intval($inputs[$keys[1]]);
+            $this->month = $inputs[$keys[1]];
 
-            $this->day = intval($inputs[$keys[2]]);
+            $this->day = $inputs[$keys[2]];
         }
 
         $this->check();
@@ -133,11 +135,11 @@ class Gejun
      */
     public function fromString($yyyy_mm_dd)
     {
-        $this->year = intval(substr($yyyy_mm_dd, 0, 4));
+        $this->year = substr($yyyy_mm_dd, 0, 4);
 
-        $this->month = intval(substr($yyyy_mm_dd, 5, 2));
+        $this->month = substr($yyyy_mm_dd, 5, 2);
 
-        $this->day = intval(substr($yyyy_mm_dd, 8, 2));
+        $this->day = substr($yyyy_mm_dd, 8, 2);
 
         $this->check();
     }

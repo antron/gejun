@@ -21,7 +21,7 @@ trait GejunCheckTrait
      *
      * @var boolean
      */
-    public $error;
+    private $error;
 
     /**
      * 年_表示用.
@@ -70,25 +70,8 @@ trait GejunCheckTrait
      */
     protected function check()
     {
-        $error = false;
 
-        if (!is_int($this->month)) {
-            $error = true;
-        }
-
-        if (!is_int($this->day)) {
-            $error = true;
-        }
-
-        if (!is_int($this->year)) {
-            $error = true;
-        }
-
-        if ($error) {
-            $this->error = true;
-        } else {
-            $this->error = !checkdate($this->month, $this->day, $this->year);
-        }
+        $this->toInt();
 
         $this->checkYear();
 
@@ -96,25 +79,57 @@ trait GejunCheckTrait
 
         $this->checkDay();
 
-        $this->makePrint();
+        $this->print = $this->year_print . $this->month_print . $this->day_print;
 
-        if ($this->error) {
-            $this->yyyy_mm_dd = null;
-        } else {
+        if (self::checkInt($this->year, $this->month, $this->day)) {
             $carbon = Carbon::createFromDate($this->year_carbon, $this->month_carbon, $this->day_carbon);
 
             $this->yyyy_mm_dd = $carbon->toDateString();
+        } else {
+            $this->yyyy_mm_dd = null;
         }
 
         $data = [
+            'order' => self::makeOrder($this->year_carbon, $this->month_carbon, $this->day_carbon),
+            'yyyy_mm_dd' => $this->yyyy_mm_dd,
+            'print' => $this->print,
             'year' => $this->year,
             'month' => $this->month,
             'day' => $this->day,
-            'yyyy_mm_dd' => $this->yyyy_mm_dd,
-            'print' => $this->print,
         ];
 
         $this->json = json_encode($data);
+    }
+
+    private static function checkInt($year, $month, $day)
+    {
+        if (!is_int($year)) {
+            return false;
+        }
+
+        if (!is_int($month)) {
+            return false;
+        }
+
+        if (!is_int($day)) {
+            return false;
+        }
+
+        return checkdate($month, $day, $year);
+    }
+
+    private function toInt()
+    {
+        $this->year = intval($this->year);
+
+        $this->month = intval($this->month);
+
+        $this->day = intval($this->day);
+    }
+
+    private static function makeOrder($year, $month, $day)
+    {
+        return $year . sprintf('%02d', $month) . sprintf('%02d', $day);
     }
 
     /**
@@ -155,27 +170,23 @@ trait GejunCheckTrait
     private function checkDay()
     {
         if ($this->day) {
-            $this->day_print = $this->day . '日';
+            if ($this->day == 110) {
+                $carbon_last_of_month = Carbon::createFromDate($this->year_carbon, $this->month_carbon, 1)
+                        ->lastOfMonth();
 
-            $this->day_carbon = $this->day;
+                $this->day_print = $carbon_last_of_month->day . '日';
+
+                $this->day_carbon = $carbon_last_of_month->day;
+            } else {
+
+                $this->day_print = $this->day . '日';
+
+                $this->day_carbon = $this->day;
+            }
         } else {
             $this->day_print = '';
 
             $this->day_carbon = 15;
-        }
-    }
-
-    /**
-     * 表示用文字列の作成.
-     * 不明？空白？
-     */
-    private function makePrint()
-    {
-
-        $this->print = $this->year_print . $this->month_print . $this->day_print;
-
-        if (!$this->print) {
-            $this->print = '不明';
         }
     }
 
